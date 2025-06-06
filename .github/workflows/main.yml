@@ -67,8 +67,7 @@ jobs:
             --registry-password ${{ secrets.ACR_PASSWORD }} \
             --cpu 1 \
             --memory 1 \
-            --ip-address Public \ 
-            --dns-name-label whatever5467999 \
+            --ip-address Public \
             --os-type Linux \
             --ports 3000      
 
