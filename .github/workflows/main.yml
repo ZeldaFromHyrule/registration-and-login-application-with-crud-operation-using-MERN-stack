@@ -22,12 +22,17 @@ jobs:
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
 
-    - name: Push mongodb
+    - name: Push mongo expres
       run: |
         docker pull mongo-express                # Get official image
         docker tag mongo-express $ACR_NAME.azurecr.io/mongo-express:latest
         docker push $ACR_NAME.azurecr.io/mongo-express:latest
 
+    - name: Push mongodb
+      run: |
+        docker pull mongo                # Get official image
+        docker tag mongo $ACR_NAME.azurecr.io/mongo:latest
+        docker push $ACR_NAME.azurecr.io/mongo:latest
 
     - name: Build and push frontend
       run: |
