@@ -50,14 +50,40 @@ jobs:
             --cpu 1 \
             --memory 1 \
             --os-type Linux \
-            --ports 8081           
+            --ports 27017           
             
     - name: Build and push frontend
       run: |
         docker build -t $ACR_NAME.azurecr.io/$IMAGE_FRONTEND ./frontend
         docker push $ACR_NAME.azurecr.io/$IMAGE_FRONTEND
+    - name: Create Frontend container
+      run: |
+          az container create \
+            --resource-group mern-app-rg \
+            --name frontend \
+            --image $ACR_NAME.azurecr.io/$IMAGE_FRONTEND \
+            --registry-login-server ${{ env.ACR_NAME }}.azurecr.io \
+            --registry-username ${{ secrets.ACR_USERNAME }} \
+            --registry-password ${{ secrets.ACR_PASSWORD }} \
+            --cpu 1 \
+            --memory 1 \
+            --os-type Linux \
+            --ports 3000       
 
     - name: Build and push backend
       run: |
         docker build -t $ACR_NAME.azurecr.io/$IMAGE_BACKEND ./backend
         docker push $ACR_NAME.azurecr.io/$IMAGE_BACKEND
+    - name: Create Backend container
+      run: |
+          az container create \
+            --resource-group mern-app-rg \
+            --name backend \
+            --image $ACR_NAME.azurecr.io/$IMAGE_BACKEND \
+            --registry-login-server ${{ env.ACR_NAME }}.azurecr.io \
+            --registry-username ${{ secrets.ACR_USERNAME }} \
+            --registry-password ${{ secrets.ACR_PASSWORD }} \
+            --cpu 1 \
+            --memory 1 \
+            --os-type Linux \
+            --ports 2000
