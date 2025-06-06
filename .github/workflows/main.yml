@@ -38,19 +38,18 @@ jobs:
         docker tag mongo $ACR_NAME.azurecr.io/mongo:latest
         docker push $ACR_NAME.azurecr.io/mongo:latest
         
-    - name: Create Mongo Express container
+    - name: Create Mongo container
       run: |
           az container create \
             --resource-group mern-app-rg \
             --name mongodb \
-            --image ${{ env.ACR_NAME }}.azurecr.io/mongo-express:latest \
+            --image ${{ env.ACR_NAME }}.azurecr.io/mongo:latest \
             --registry-login-server ${{ env.ACR_NAME }}.azurecr.io \
             --registry-username ${{ secrets.ACR_USERNAME }} \
             --registry-password ${{ secrets.ACR_PASSWORD }} \
             --cpu 1 \
             --memory 1 \
-            --ports 8081 \
-            --osType Windows
+            --ports 8081           
             
     - name: Build and push frontend
       run: |
