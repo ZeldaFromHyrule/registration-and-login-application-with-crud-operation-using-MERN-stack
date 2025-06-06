@@ -22,6 +22,10 @@ jobs:
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
 
+    - name: Push mongodb
+      run: |
+        docker push https://hub.docker.com/_/mongo-express
+
     - name: Build and push frontend
       run: |
         docker build -t $ACR_NAME.azurecr.io/$IMAGE_FRONTEND ./frontend
