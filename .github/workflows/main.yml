@@ -67,8 +67,10 @@ jobs:
             --registry-password ${{ secrets.ACR_PASSWORD }} \
             --cpu 1 \
             --memory 1 \
+            --ip-address Public \ 
+            --dns-name-label whatever5467999 \
             --os-type Linux \
-            --ports 3000       
+            --ports 3000      
 
     - name: Build and push backend
       run: |
