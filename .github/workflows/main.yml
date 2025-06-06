@@ -49,7 +49,7 @@ jobs:
             --registry-password ${{ secrets.ACR_PASSWORD }} \
             --cpu 1 \
             --memory 1 \
-            --os-type Windows \
+            --os-type Linux \
             --ports 8081           
             
     - name: Build and push frontend
