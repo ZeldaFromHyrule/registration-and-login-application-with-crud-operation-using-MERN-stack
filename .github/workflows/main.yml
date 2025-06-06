@@ -33,6 +33,7 @@ jobs:
         docker pull mongo                # Get official image
         docker tag mongo $ACR_NAME.azurecr.io/mongo:latest
         docker push $ACR_NAME.azurecr.io/mongo:latest
+        az container create --resource-group mern-app-rg --name mongodb --image $ACR_NAME.azurecr.io/mongo-express:latest --cpu 1 --memory 1 --registry-login-server ${{ env.ACR_NAME }}.azurecr.io --ports 8081
 
     - name: Build and push frontend
       run: |
