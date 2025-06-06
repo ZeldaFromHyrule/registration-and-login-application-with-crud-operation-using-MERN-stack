@@ -25,7 +25,8 @@ jobs:
       uses: azure/docker-login@v1
       with:
         login-server: ${{ env.ACR_NAME }}.azurecr.io
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
 
     - name: Build and push frontend
       run: |
