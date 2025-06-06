@@ -31,7 +31,19 @@ jobs:
         docker pull mongo-express                # Get official image
         docker tag mongo-express $ACR_NAME.azurecr.io/mongo-express:latest
         docker push $ACR_NAME.azurecr.io/mongo-express:latest
-
+    - name: Create Mongo Express container
+      run: |
+          az container create \
+            --resource-group mern-app-rg \
+            --name mongodb \
+            --image ${{ env.ACR_NAME }}.azurecr.io/mongo-express:latest \
+            --registry-login-server ${{ env.ACR_NAME }}.azurecr.io \
+            --registry-username ${{ secrets.ACR_USERNAME }} \
+            --registry-password ${{ secrets.ACR_PASSWORD }} \
+            --cpu 1 \
+            --memory 1 \
+            --ports 8081 \
+            --osType Windows
     - name: Push mongodb
       run: |
         docker pull mongo                # Get official image
