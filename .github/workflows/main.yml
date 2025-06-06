@@ -24,7 +24,10 @@ jobs:
 
     - name: Push mongodb
       run: |
-        docker push https://hub.docker.com/_/mongo-express
+        docker pull mongo-express                # Get official image
+        docker tag mongo-express $ACR_NAME.azurecr.io/mongo-express:latest
+        docker push $ACR_NAME.azurecr.io/mongo-express:latest
+
 
     - name: Build and push frontend
       run: |
