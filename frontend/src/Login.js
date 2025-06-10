@@ -20,7 +20,7 @@ class Login extends React.Component {
   login = () => {
     const pwd = bcrypt.hashSync(this.state.password, salt);
 
-    axios.post('http://localhost:2000/login', {
+    axios.post('${process.env.REACT_APP_BACKEND_URL}/login', {
       username: this.state.username,
       password: pwd,
     }).then((res) => {
@@ -74,7 +74,7 @@ class Login extends React.Component {
             variant="contained"
             color="primary"
             size="small"
-            disabled={this.state.username == '' && this.state.password == ''}
+            disabled={this.state.username === '' && this.state.password === ''}
             onClick={this.login}
           >
             Login

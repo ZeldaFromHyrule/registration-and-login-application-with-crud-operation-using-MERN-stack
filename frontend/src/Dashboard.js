@@ -52,7 +52,7 @@ class Dashboard extends Component {
     if (this.state.search) {
       data = `${data}&search=${this.state.search}`;
     }
-    axios.get(`http://localhost:2000/get-product${data}`, {
+    axios.get(`${process.env.REACT_APP_BACKEND_URL}/get-product${data}`, {
       headers: {
         'token': this.state.token
       }
@@ -60,7 +60,7 @@ class Dashboard extends Component {
       this.setState({ loading: false, products: res.data.products, pages: res.data.pages });
     }).catch((err) => {
       swal({
-        text: err.response.data.errorMessage,
+        text: err.response?.data?.errorMessage,
         icon: "error",
         type: "error"
       });
@@ -69,7 +69,7 @@ class Dashboard extends Component {
   }
 
   deleteProduct = (id) => {
-    axios.post('http://localhost:2000/delete-product', {
+    axios.post('${process.env.REACT_APP_BACKEND_URL}/delete-product', {
       id: id
     }, {
       headers: {
@@ -113,7 +113,7 @@ class Dashboard extends Component {
       this.setState({ fileName: e.target.files[0].name }, () => { });
     }
     this.setState({ [e.target.name]: e.target.value }, () => { });
-    if (e.target.name == 'search') {
+    if (e.target.name === 'search') {
       this.setState({ page: 1 }, () => {
         this.getProduct();
       });
@@ -129,7 +129,7 @@ class Dashboard extends Component {
     file.append('discount', this.state.discount);
     file.append('price', this.state.price);
 
-    axios.post('http://localhost:2000/add-product', file, {
+    axios.post('${process.env.REACT_APP_BACKEND_URL}/add-product', file, {
       headers: {
         'content-type': 'multipart/form-data',
         'token': this.state.token
@@ -167,7 +167,7 @@ class Dashboard extends Component {
     file.append('discount', this.state.discount);
     file.append('price', this.state.price);
 
-    axios.post('http://localhost:2000/update-product', file, {
+    axios.post('${process.env.REACT_APP_BACKEND_URL}/update-product', file, {
       headers: {
         'content-type': 'multipart/form-data',
         'token': this.state.token
@@ -324,7 +324,7 @@ class Dashboard extends Component {
               Cancel
             </Button>
             <Button
-              disabled={this.state.name == '' || this.state.desc == '' || this.state.discount == '' || this.state.price == ''}
+              disabled={this.state.name === '' || this.state.desc === '' || this.state.discount === '' || this.state.price === ''}
               onClick={(e) => this.updateProduct()} color="primary" autoFocus>
               Edit Product
             </Button>
@@ -404,7 +404,7 @@ class Dashboard extends Component {
               Cancel
             </Button>
             <Button
-              disabled={this.state.name == '' || this.state.desc == '' || this.state.discount == '' || this.state.price == '' || this.state.file == null}
+              disabled={this.state.name === '' || this.state.desc === '' || this.state.discount === '' || this.state.price === '' || this.state.file === null}
               onClick={(e) => this.addProduct()} color="primary" autoFocus>
               Add Product
             </Button>
@@ -441,7 +441,7 @@ class Dashboard extends Component {
                   <TableCell align="center" component="th" scope="row">
                     {row.name}
                   </TableCell>
-                  <TableCell align="center"><img src={`http://localhost:2000/${row.image}`} width="70" height="70" /></TableCell>
+                  <TableCell align="center"><img src={`${process.env.REACT_APP_BACKEND_URL}/${row.image}`} width="70" height="70" /></TableCell>
                   <TableCell align="center">{row.desc}</TableCell>
                   <TableCell align="center">{row.price}</TableCell>
                   <TableCell align="center">{row.discount}</TableCell>

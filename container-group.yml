@@ -1,0 +1,47 @@
+name: mernapp-group
+location: eastus
+properties:
+  containers:
+    - name: frontend
+      properties:
+        image: $ACR_LOGIN_SERVER/frontend:latest
+        ports:
+          - port: 3000
+        resources:
+          requests:
+            cpu: 1
+            memoryInGb: 1
+        environmentVariables:
+          - name: BACKEND_URL
+            value: http://backend:2000
+
+    - name: backend
+      properties:
+        image: $ACR_LOGIN_SERVER/backend:latest
+        ports:
+          - port: 2000
+        resources:
+          requests:
+            cpu: 1
+            memoryInGb: 1
+        environmentVariables:
+          - name: MONGO_URI
+            value: mongodb://mongodb:27017/mydb
+
+    - name: mongodb
+      properties:
+        image: mongo:6
+        ports:
+          - port: 27017
+        resources:
+          requests:
+            cpu: 0.5
+            memoryInGb: 1
+
+  osType: Linux
+  ipAddress:
+    type: Public
+    ports:
+      - protocol: tcp
+        port: 3000
+  restartPolicy: Always
