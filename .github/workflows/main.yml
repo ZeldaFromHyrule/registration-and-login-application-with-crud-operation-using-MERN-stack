@@ -48,12 +48,6 @@ jobs:
           docker tag mongo-express ${{ env.ACR_NAME }}.azurecr.io/mongo-express:latest
           docker push ${{ env.ACR_NAME }}.azurecr.io/mongo-express:latest
 
-      - name: Push mongodb
-        run: |
-          docker pull mongo                # Get official image
-          docker tag mongo ${{ env.ACR_NAME }}.azurecr.io/mongo:latest
-          docker push ${{ env.ACR_NAME }}.azurecr.io/mongo:latest
-
       - name: Create Frontend container
         run: |
           az container create \
