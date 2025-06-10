@@ -28,10 +28,6 @@ jobs:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
-      - name: Create Resource Group if not exists
-        run: |
-          az group create --name mern-app-rg --location eastus || echo "Resource group already exists"
-
       - name: Build and push frontend
         run: |
           docker build -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }} ./frontend
@@ -47,6 +43,12 @@ jobs:
           docker pull mongo-express                # Get official image
           docker tag mongo-express ${{ env.ACR_NAME }}.azurecr.io/mongo-express:latest
           docker push ${{ env.ACR_NAME }}.azurecr.io/mongo-express:latest
+
+      - name: Push mongodb
+        run: |
+          docker pull mongo                # Get official image
+          docker tag mongo ${{ env.ACR_NAME }}.azurecr.io/mongo:latest
+          docker push ${{ env.ACR_NAME }}.azurecr.io/mongo:latest
 
       - name: Create Frontend container
         run: |
