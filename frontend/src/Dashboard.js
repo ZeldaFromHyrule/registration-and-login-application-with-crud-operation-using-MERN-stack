@@ -436,7 +436,7 @@ class Dashboard extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {this.state.products.map((row) => (
+              {this.state.products?.map((row) => (
                 <TableRow key={row.name}>
                   <TableCell align="center" component="th" scope="row">
                     {row.name}
