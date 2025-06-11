@@ -65,8 +65,8 @@ jobs:
             --dns-name-label frontend11211297897897800 \
             --os-type Linux \
             --ports 3000 \
-            --vnet myVnet \
-            --subnet mySubnet \
+            --vnet aci-vnet \
+            --subnet aci-subnet \
             --environment-variables REACT_APP_BACKEND_URL=http://backend:2000
 
       - name: Create Backend container
@@ -82,8 +82,8 @@ jobs:
             --memory 1 \
             --os-type Linux \
             --ports 2000 \
-            --vnet myVnet \
-            --subnet mySubnet \
+            --vnet aci-vnet \
+            --subnet aci-subnet \
             --environment-variables MONGO_URI=mongodb://mongo:27017
 
       - name: Create MongoDB container
@@ -98,6 +98,6 @@ jobs:
             --cpu 1 \
             --memory 1 \
             --os-type Linux \
-            --vnet myVnet \
-            --subnet mySubnet \
+            --vnet aci-vnet \
+            --subnet aci-subnet \
             --ports 27017
