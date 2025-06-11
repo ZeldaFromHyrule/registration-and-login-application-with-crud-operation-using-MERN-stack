@@ -87,7 +87,7 @@ jobs:
           az container create \
             --resource-group mern-app-rg \
             --name mongo \
-            --image mongo:6 \
+            --image ${{ env.ACR_NAME }}.azurecr.io/mongo:latest \
             --cpu 1 \
             --memory 1 \
             --os-type Linux \
