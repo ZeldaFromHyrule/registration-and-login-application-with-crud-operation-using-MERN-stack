@@ -88,6 +88,9 @@ jobs:
             --resource-group mern-app-rg \
             --name mongo \
             --image ${{ env.ACR_NAME }}.azurecr.io/mongo:latest \
+            --registry-login-server ${{ env.ACR_NAME }}.azurecr.io \
+            --registry-username ${{ secrets.ACR_USERNAME }} \
+            --registry-password ${{ secrets.ACR_PASSWORD }} \
             --cpu 1 \
             --memory 1 \
             --os-type Linux \
