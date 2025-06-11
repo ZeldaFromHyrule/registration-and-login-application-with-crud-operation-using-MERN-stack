@@ -30,7 +30,7 @@ jobs:
 
       - name: Build and push frontend
         run: |
-          docker build -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }} ./frontend
+          docker build --build-arg REACT_APP_BACKEND_URL=http://backend:2000 -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }} ./frontend
           docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }}
 
       - name: Build and push backend
