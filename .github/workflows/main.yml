@@ -80,7 +80,7 @@ jobs:
             --memory 1 \
             --os-type Linux \
             --ports 2000 \
-            --environment-variables MONGO_URI=mongodb://mongo:27017/mydb
+            --environment-variables MONGO_URI=mongodb://mongo:27017
 
       - name: Create MongoDB container
         run: |
