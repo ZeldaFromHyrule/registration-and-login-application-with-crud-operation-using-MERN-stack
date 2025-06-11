@@ -61,8 +61,6 @@ jobs:
             --registry-password ${{ secrets.ACR_PASSWORD }} \
             --cpu 1 \
             --memory 1 \
-            --ip-address Public \
-            --dns-name-label frontend11211297897897800 \
             --os-type Linux \
             --ports 3000 \
             --vnet aci-vnet \
