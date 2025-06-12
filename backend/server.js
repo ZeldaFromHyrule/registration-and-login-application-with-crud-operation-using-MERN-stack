@@ -7,12 +7,12 @@ var multer = require('multer'),
   bodyParser = require('body-parser'),
   path = require('path');
 var mongoose = require("mongoose");
-mongoose.connect('process.env.MONGO_URI', {
+mongoose.connect(`${process.env.MONGO_URI}`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
 .then(() => console.log('Connected to MongoDB'))
-.catch(err => console.error('MongoDB connection error:', err));
+.catch(err => console.error(`MongoDB connection error ${process.env.MONGO_URI}:`, err));
 var fs = require('fs');
 var product = require("./model/product.js");
 var user = require("./model/user.js");
