@@ -32,6 +32,8 @@ jobs:
         run: |
           docker build --build-arg REACT_APP_BACKEND_URL=https://backendmern-dhb3g6che3hafxb4.canadacentral-01.azurewebsites.net -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }} ./frontend
           docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }}
+          az webapp config container set --name frontendmern --resource-group mern-app-rg --docker-custom-image-name mernappacr.azurecr.io/frontend:latest
+          az webapp restart --name frontendmern --resource-group mern-app-rg
 
       - name: Build and push backend
         run: |
