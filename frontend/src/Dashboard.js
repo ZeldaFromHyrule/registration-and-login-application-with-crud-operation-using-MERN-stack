@@ -69,7 +69,7 @@ class Dashboard extends Component {
   }
 
   deleteProduct = (id) => {
-    axios.post('${process.env.REACT_APP_BACKEND_URL}/delete-product', {
+    axios.post(`${process.env.REACT_APP_BACKEND_URL}/delete-product`, {
       id: id
     }, {
       headers: {
@@ -129,7 +129,7 @@ class Dashboard extends Component {
     file.append('discount', this.state.discount);
     file.append('price', this.state.price);
 
-    axios.post('${process.env.REACT_APP_BACKEND_URL}/add-product', file, {
+    axios.post(`${process.env.REACT_APP_BACKEND_URL}/add-product`, file, {
       headers: {
         'content-type': 'multipart/form-data',
         'token': this.state.token
@@ -167,7 +167,7 @@ class Dashboard extends Component {
     file.append('discount', this.state.discount);
     file.append('price', this.state.price);
 
-    axios.post('${process.env.REACT_APP_BACKEND_URL}/update-product', file, {
+    axios.post(`${process.env.REACT_APP_BACKEND_URL}/update-product`, file, {
       headers: {
         'content-type': 'multipart/form-data',
         'token': this.state.token

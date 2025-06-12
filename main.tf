@@ -44,4 +44,3 @@ resource "azurerm_role_assignment" "acr_push" {
   role_definition_name = "AcrPush"
   principal_id         = azurerm_user_assigned_identity.aca_identity.principal_id
 }
-

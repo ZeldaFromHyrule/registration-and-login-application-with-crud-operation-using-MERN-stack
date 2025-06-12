@@ -18,7 +18,7 @@ class Register extends React.Component {
 
   register = () => {
 
-    axios.post('${process.env.REACT_APP_BACKEND_URL}/register', {
+    axios.post(`${process.env.REACT_APP_BACKEND_URL}/register`, {
       username: this.state.username,
       password: this.state.password,
     }).then((res) => {      
