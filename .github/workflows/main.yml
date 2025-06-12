@@ -30,72 +30,10 @@ jobs:
 
       - name: Build and push frontend
         run: |
-          docker build --build-arg REACT_APP_BACKEND_URL=http://backend:2000 -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }} ./frontend
+          docker build --build-arg REACT_APP_BACKEND_URL=https://backendmern-dhb3g6che3hafxb4.eastus2-01.azurewebsites.net -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }} ./frontend
           docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }}
 
       - name: Build and push backend
         run: |
           docker build -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_BACKEND }} ./backend
           docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_BACKEND }}
-
-      - name: Push mongo-express
-        run: |
-          docker pull mongo-express                # Get official image
-          docker tag mongo-express ${{ env.ACR_NAME }}.azurecr.io/mongo-express:latest
-          docker push ${{ env.ACR_NAME }}.azurecr.io/mongo-express:latest
-
-      - name: Push mongodb
-        run: |
-          docker pull mongo                # Get official image
-          docker tag mongo ${{ env.ACR_NAME }}.azurecr.io/mongo:latest
-          docker push ${{ env.ACR_NAME }}.azurecr.io/mongo:latest
-
-      - name: Create Frontend container
-        run: |
-          az container create \
-            --resource-group mern-app-rg \
-            --name frontend \
-            --image ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }} \
-            --registry-login-server ${{ env.ACR_NAME }}.azurecr.io \
-            --registry-username ${{ secrets.ACR_USERNAME }} \
-            --registry-password ${{ secrets.ACR_PASSWORD }} \
-            --cpu 1 \
-            --memory 1 \
-            --os-type Linux \
-            --ports 3000 \
-            --vnet aci-vnet \
-            --subnet aci-subnet \
-            --environment-variables REACT_APP_BACKEND_URL=http://backend:2000
-
-      - name: Create Backend container
-        run: |
-          az container create \
-            --resource-group mern-app-rg \
-            --name backend \
-            --image ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_BACKEND }} \
-            --registry-login-server ${{ env.ACR_NAME }}.azurecr.io \
-            --registry-username ${{ secrets.ACR_USERNAME }} \
-            --registry-password ${{ secrets.ACR_PASSWORD }} \
-            --cpu 1 \
-            --memory 1 \
-            --os-type Linux \
-            --ports 2000 \
-            --vnet aci-vnet \
-            --subnet aci-subnet \
-            --environment-variables MONGO_URI=mongodb://mongo:27017
-
-      - name: Create MongoDB container
-        run: |
-          az container create \
-            --resource-group mern-app-rg \
-            --name mongo \
-            --image ${{ env.ACR_NAME }}.azurecr.io/mongo:latest \
-            --registry-login-server ${{ env.ACR_NAME }}.azurecr.io \
-            --registry-username ${{ secrets.ACR_USERNAME }} \
-            --registry-password ${{ secrets.ACR_PASSWORD }} \
-            --cpu 1 \
-            --memory 1 \
-            --os-type Linux \
-            --vnet aci-vnet \
-            --subnet aci-subnet \
-            --ports 27017
