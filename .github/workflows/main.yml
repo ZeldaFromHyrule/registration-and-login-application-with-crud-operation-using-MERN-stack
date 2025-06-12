@@ -37,3 +37,5 @@ jobs:
         run: |
           docker build -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_BACKEND }} ./backend
           docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_BACKEND }}
+          az webapp config container set --name backendmern --resource-group mern-app-rg --docker-custom-image-name mernappacr.azurecr.io/backend:latest
+          az webapp restart --name backendmern --resource-group mern-app-rg
