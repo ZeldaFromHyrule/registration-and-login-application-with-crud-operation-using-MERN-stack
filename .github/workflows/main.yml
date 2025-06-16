@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  ACR_NAME: mernappacr               # Replace with your actual ACR name
+  ACR_NAME: mernappacr              
   IMAGE_FRONTEND: frontend
   IMAGE_BACKEND: backend
 
@@ -35,7 +35,7 @@ jobs:
 
       - name: Build and push backend image
         run: |
-          docker build -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_BACKEND }} ./backend
+          docker build -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_BACKEND }}:${{ env.TIMESTAMP }} ./backend
           docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_BACKEND }}:${{ env.TIMESTAMP }} 
       
       - name: Refresh backend container on image update
@@ -51,7 +51,7 @@ jobs:
       
       - name: Build and push frontend image
         run: |
-          docker build --build-arg REACT_APP_BACKEND_URL=${{ env.BACKEND_URL }} -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }} ./frontend
+          docker build --build-arg REACT_APP_BACKEND_URL=${{ env.BACKEND_URL }} -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }}:${{ env.TIMESTAMP }} ./frontend
           docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }}:${{ env.TIMESTAMP }}  
           
       - name: Refresh frontend container apps on image update
