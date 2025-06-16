@@ -1,0 +1,38 @@
+name: Build and Push to ACR
+
+on:
+  workflow_dispatch:
+
+env:
+  ACR_NAME: mernappacr               # Replace with your actual ACR name
+  IMAGE_FRONTEND: frontend:latest
+  IMAGE_BACKEND: backend:latest
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Azure ACR login
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.ACR_NAME }}.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build and push frontend image
+        run: |
+          docker build --build-arg REACT_APP_BACKEND_URL=${{ secrets.REACT_APP_BACKEND_URL }} -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }} ./frontend
+          docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }}
+          az webapp config container set --name frontendmern --resource-group mern-app-rg --docker-custom-image-name mernappacr.azurecr.io/frontend:latest
+          az webapp restart --name frontendmern --resource-group mern-app-rg
+
+ 
