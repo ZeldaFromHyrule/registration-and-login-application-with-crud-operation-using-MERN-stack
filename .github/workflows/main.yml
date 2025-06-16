@@ -67,5 +67,5 @@ jobs:
           
       - name: Configure backend container
         run: |
-          az webapp cors add --name backendmern --resource-group mern-app-rg --allowed-origins ${{ env.FRONTEND_URL }}
+          az webapp cors add --name backendmern --resource-group mern-app-rg --allowed-origins https://${{ env.FRONTEND_URL }}
           az webapp config appsettings set --name backendmern --resource-group mern-app-rg --settings MONGO_URI=${{ secrets.MONGO_URI }}
