@@ -52,8 +52,7 @@ jobs:
       - name: Build and push frontend image
         run: |
           docker build --build-arg REACT_APP_BACKEND_URL=${{ env.BACKEND_URL }} -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }}:${{ env.TIMESTAMP }} ./frontend
-          docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }}:${{ env.TIMESTAMP }} 
-
+          docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }}:${{ env.TIMESTAMP }}
           
       - name: Refresh frontend container apps on image update
         run: | 
@@ -67,5 +66,6 @@ jobs:
           echo "FRONTEND_URL=${FRONTEND_URL}" >> $GITHUB_ENV
           
       - name: Configure backend container
+        run: |
           az webapp cors add --name backendmern --resource-group mern-app-rg --allowed-origins ${{ env.FRONTEND_URL }}
           az webapp config appsettings set --name backendmern --resource-group mern-app-rg --settings MONGO_URI=${{ secrets.MONGO_URI }}
