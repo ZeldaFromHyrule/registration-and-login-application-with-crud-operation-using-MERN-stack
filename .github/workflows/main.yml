@@ -52,9 +52,16 @@ jobs:
       - name: Build and push frontend image
         run: |
           docker build --build-arg REACT_APP_BACKEND_URL=${{ env.BACKEND_URL }} -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }}:${{ env.TIMESTAMP }} ./frontend
-          docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }}:${{ env.TIMESTAMP }}  
+          docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }}:${{ env.TIMESTAMP }} 
+      - name: Get Frontend URL
+        id: get_frontend_url
+        run: |
+          FRONTEND_URL=$(az webapp show --name frontendmern --resource-group mern-app-rg --query "defaultHostName" -o tsv)
+          echo "FRONTEND_URL=${FRONTEND_URL}" >> $GITHUB_ENV
           
       - name: Refresh frontend container apps on image update
         run: | 
           az webapp config container set --name frontendmern --resource-group mern-app-rg --docker-custom-image-name mernappacr.azurecr.io/${{ env.IMAGE_FRONTEND }}:${{ env.TIMESTAMP }}
-          az webapp restart --name frontendmern --resource-group mern-app-rg      
+          az webapp restart --name frontendmern --resource-group mern-app-rg          
+          az webapp cors add --name frontendmern --resource-group mern-app-rg --allowed-origins ${{ env.FRONTEND_URL }}
+          az webapp config appsettings set --name frontendmern --resource-group mern-app-rg --settings MONGO_URI=${{ secrets.MONGO_URI }}
