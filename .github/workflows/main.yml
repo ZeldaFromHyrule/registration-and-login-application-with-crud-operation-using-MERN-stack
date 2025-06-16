@@ -5,14 +5,19 @@ on:
 
 env:
   ACR_NAME: mernappacr               # Replace with your actual ACR name
-  IMAGE_FRONTEND: frontend:latest
-  IMAGE_BACKEND: backend:latest
+  IMAGE_FRONTEND: frontend
+  IMAGE_BACKEND: backend
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Generate Timestamp
+        id: timestamp
+        run: |
+          TIMESTAMP=$(date +'%Y%m%d%H%M%S')
+          echo "TIMESTAMP=${TIMESTAMP}" >> $GITHUB_ENV
       - name: Checkout source
         uses: actions/checkout@v3
 
@@ -26,20 +31,30 @@ jobs:
         with:
           login-server: ${{ env.ACR_NAME }}.azurecr.io
           username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
-
-      - name: Build and push frontend image
-        run: |
-          docker build --build-arg REACT_APP_BACKEND_URL=backendmern-dhb3g6che3hafxb4.eastus2-01.azurewebsites.net -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }} ./frontend
-          docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }}    
+          password: ${{ secrets.ACR_PASSWORD }}  
 
       - name: Build and push backend image
         run: |
           docker build -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_BACKEND }} ./backend
-          docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_BACKEND }}
-      - name: Refresh container apps on image update
+          docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_BACKEND }}:${{ env.TIMESTAMP }} 
+      
+      - name: Refresh backend container on image update
         run: | 
-          az webapp config container set --name frontendmern --resource-group mern-app-rg --docker-custom-image-name mernappacr.azurecr.io/frontend:latest
-          az webapp restart --name frontendmern --resource-group mern-app-rg
-          az webapp config container set --name backendmern --resource-group mern-app-rg --docker-custom-image-name mernappacr.azurecr.io/backend:latest
+          az webapp config container set --name backendmern --resource-group mern-app-rg --docker-custom-image-name mernappacr.azurecr.io/${{ env.IMAGE_BACKEND }}:${{ env.TIMESTAMP }}
           az webapp restart --name backendmern --resource-group mern-app-rg
+          
+      - name: Get Backend URL
+        id: get_backend_url
+        run: |
+          BACKEND_URL=$(az webapp show --name backendmern --resource-group mern-app-rg --query "defaultHostName" -o tsv)
+          echo "BACKEND_URL=${BACKEND_URL}" >> $GITHUB_ENV
+      
+      - name: Build and push frontend image
+        run: |
+          docker build --build-arg REACT_APP_BACKEND_URL=${{ env.BACKEND_URL }} -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }} ./frontend
+          docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }}:${{ env.TIMESTAMP }}  
+          
+      - name: Refresh frontend container apps on image update
+        run: | 
+          az webapp config container set --name frontendmern --resource-group mern-app-rg --docker-custom-image-name mernappacr.azurecr.io/${{ env.IMAGE_FRONTEND }}:${{ env.TIMESTAMP }}
+          az webapp restart --name frontendmern --resource-group mern-app-rg      
