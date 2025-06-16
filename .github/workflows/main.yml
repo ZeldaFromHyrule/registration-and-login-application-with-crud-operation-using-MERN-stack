@@ -28,12 +28,12 @@ jobs:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
-      - name: Build and push frontend
+      - name: Build and push frontend image
         run: |
           docker build --build-arg REACT_APP_BACKEND_URL=https://backendmern-dhb3g6che3hafxb4.canadacentral-01.azurewebsites.net -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }} ./frontend
-          docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }}        
+          docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_FRONTEND }}    
 
-      - name: Build and push backend
+      - name: Build and push backend image
         run: |
           docker build -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_BACKEND }} ./backend
           docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_BACKEND }}
