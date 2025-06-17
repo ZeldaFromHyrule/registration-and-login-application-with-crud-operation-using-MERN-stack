@@ -40,7 +40,7 @@ jobs:
       
       - name: Refresh backend container on image update
         run: | 
-          az webapp config container set --name backendmernjrn --resource-group mern-app-rg --docker-custom-image-name mernappacr.azurecr.io/${{ env.IMAGE_BACKEND }}:${{ env.TIMESTAMP }}:2000 
+          az webapp config container set --name backendmernjrn --resource-group mern-app-rg --docker-custom-image-name mernappacr.azurecr.io/${{ env.IMAGE_BACKEND }}:${{ env.TIMESTAMP }}
           az webapp restart --name backendmernjrn --resource-group mern-app-rg
           
       - name: Get Backend URL
@@ -56,7 +56,7 @@ jobs:
           
       - name: Refresh frontend container apps on image update
         run: | 
-          az webapp config container set --name frontendmernjrn --resource-group mern-app-rg --docker-custom-image-name mernappacr.azurecr.io/${{ env.IMAGE_FRONTEND }}:${{ env.TIMESTAMP }}:3000 
+          az webapp config container set --name frontendmernjrn --resource-group mern-app-rg --docker-custom-image-name mernappacr.azurecr.io/${{ env.IMAGE_FRONTEND }}:${{ env.TIMESTAMP }}
           az webapp config appsettings set --name frontendmernjrn --resource-group mern-app-rg --settings WEBSITES_PORT=3000
           az webapp restart --name frontendmernjrn --resource-group mern-app-rg
           
