@@ -40,13 +40,13 @@ jobs:
       
       - name: Refresh backend container on image update
         run: | 
-          az webapp config container set --name backendmern --resource-group mern-app-rg --docker-custom-image-name mernappacr.azurecr.io/${{ env.IMAGE_BACKEND }}:${{ env.TIMESTAMP }}
-          az webapp restart --name backendmern --resource-group mern-app-rg
+          az webapp config container set --name backendmernjrn --resource-group mern-app-rg --docker-custom-image-name mernappacr.azurecr.io/${{ env.IMAGE_BACKEND }}:${{ env.TIMESTAMP }}
+          az webapp restart --name backendmernjrn --resource-group mern-app-rg
           
       - name: Get Backend URL
         id: get_backend_url
         run: |
-          BACKEND_URL=$(az webapp show --name backendmern --resource-group mern-app-rg --query "defaultHostName" -o tsv)
+          BACKEND_URL=$(az webapp show --name backendmernjrn --resource-group mern-app-rg --query "defaultHostName" -o tsv)
           echo "BACKEND_URL=${BACKEND_URL}" >> $GITHUB_ENV
       
       - name: Build and push frontend image
@@ -56,16 +56,16 @@ jobs:
           
       - name: Refresh frontend container apps on image update
         run: | 
-          az webapp config container set --name frontendmern --resource-group mern-app-rg --docker-custom-image-name mernappacr.azurecr.io/${{ env.IMAGE_FRONTEND }}:${{ env.TIMESTAMP }}
-          az webapp restart --name frontendmern --resource-group mern-app-rg
+          az webapp config container set --name backendmernjrn --resource-group mern-app-rg --docker-custom-image-name mernappacr.azurecr.io/${{ env.IMAGE_FRONTEND }}:${{ env.TIMESTAMP }}
+          az webapp restart --name backendmernjrn --resource-group mern-app-rg
           
       - name: Get Frontend URL
         id: get_frontend_url
         run: |
-          FRONTEND_URL=$(az webapp show --name frontendmern --resource-group mern-app-rg --query "defaultHostName" -o tsv)
+          FRONTEND_URL=$(az webapp show --name backendmernjrn --resource-group mern-app-rg --query "defaultHostName" -o tsv)
           echo "FRONTEND_URL=${FRONTEND_URL}" >> $GITHUB_ENV
           
       - name: Configure backend container
         run: |
-          az webapp cors add --name backendmern --resource-group mern-app-rg --allowed-origins https://${{ env.FRONTEND_URL }}
-          az webapp config appsettings set --name backendmern --resource-group mern-app-rg --settings MONGO_URI=${{ secrets.MONGO_URI }}
+          az webapp cors add --name backendmernjrn --resource-group mern-app-rg --allowed-origins https://${{ env.FRONTEND_URL }}
+          az webapp config appsettings set --name backendmernjrn --resource-group mern-app-rg --settings MONGO_URI=${{ secrets.MONGO_URI }}
