@@ -2,7 +2,7 @@
 terraform {
   required_providers {
     azurerm = {
-      source = "hashicorp/azurerm"
+      source  = "hashicorp/azurerm"
       version = "4.31.0"
     }
   }
@@ -21,21 +21,21 @@ resource "azurerm_resource_group" "rg" {
 resource "azurerm_container_registry" "acr" {
   name                = var.acr_name
   resource_group_name = azurerm_resource_group.rg.name
-  location = var.location
+  location            = var.location
   sku                 = "Basic"
   admin_enabled       = true
 }
 
 resource "azurerm_container_app_environment" "aca_env" {
-  name                       = var.container_app_env_name
-  location                   = var.location
-  resource_group_name        = azurerm_resource_group.rg.name
-  
+  name                = var.container_app_env_name
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+
 }
 
 resource "azurerm_user_assigned_identity" "aca_identity" {
   name                = "acaIdentity"
-  location = var.location
+  location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 }
 
@@ -43,4 +43,17 @@ resource "azurerm_role_assignment" "acr_push" {
   scope                = azurerm_container_registry.acr.id
   role_definition_name = "AcrPush"
   principal_id         = azurerm_user_assigned_identity.aca_identity.principal_id
+}
+
+resource "azurerm_role_assignment" "acr_pull" {
+  scope                = azurerm_container_registry.acr.id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_user_assigned_identity.aca_identity.principal_id
+}
+resource "azurerm_service_plan" "linux_plan" {
+  name                = "linux_plan"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  os_type             = "Linux"
+  sku_name            = "B1"
 }

@@ -45,7 +45,7 @@ class Login extends React.Component {
     return (
       <div style={{ marginTop: '200px' }}>
         <div>
-          <h2>${process.env.REACT_APP_BACKEND_URL}</h2>
+          <h2>Login</h2>
         </div>
 
         <div>

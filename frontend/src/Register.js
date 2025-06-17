@@ -17,8 +17,8 @@ class Register extends React.Component {
   onChange = (e) => this.setState({ [e.target.name]: e.target.value });
 
   register = () => {
-
-    axios.post(`${process.env.REACT_APP_BACKEND_URL}/register`, {
+    const backendUrl = `https://${process.env.REACT_APP_BACKEND_URL}/register`;
+    axios.post(backendUrl, {
       username: this.state.username,
       password: this.state.password,
     }).then((res) => {      
