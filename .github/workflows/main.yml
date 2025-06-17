@@ -56,16 +56,17 @@ jobs:
           
       - name: Refresh frontend container apps on image update
         run: | 
-          az webapp config container set --name backendmernjrn --resource-group mern-app-rg --docker-custom-image-name mernappacr.azurecr.io/${{ env.IMAGE_FRONTEND }}:${{ env.TIMESTAMP }}
-          az webapp restart --name backendmernjrn --resource-group mern-app-rg
+          az webapp config container set --name frontendmernjrn --resource-group mern-app-rg --docker-custom-image-name mernappacr.azurecr.io/${{ env.IMAGE_FRONTEND }}:${{ env.TIMESTAMP }} 
+          az webapp config appsettings set --name frontendmernjrn --settings WEBSITES_PORT=3000
+          az webapp restart --name frontendmernjrn --resource-group mern-app-rg
           
       - name: Get Frontend URL
         id: get_frontend_url
         run: |
-          FRONTEND_URL=$(az webapp show --name backendmernjrn --resource-group mern-app-rg --query "defaultHostName" -o tsv)
+          FRONTEND_URL=$(az webapp show --name frontendmernjrn --resource-group mern-app-rg --query "defaultHostName" -o tsv)
           echo "FRONTEND_URL=${FRONTEND_URL}" >> $GITHUB_ENV
           
       - name: Configure backend container
         run: |
           az webapp cors add --name backendmernjrn --resource-group mern-app-rg --allowed-origins https://${{ env.FRONTEND_URL }}
-          az webapp config appsettings set --name backendmernjrn --resource-group mern-app-rg --settings MONGO_URI=${{ secrets.MONGO_URI }}
+          az webapp config appsettings set --name backendmernjrn --resource-group mern-app-rg --settings MONGO_URI=${{ secrets.MONGO_URI }} --settings WEBSITES_PORT=2000
