@@ -7,7 +7,12 @@ var multer = require('multer'),
   bodyParser = require('body-parser'),
   path = require('path');
 var mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost/productDB");
+mongoose.connect(`${process.env.MONGO_URI}`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log('Connected to MongoDB'))
+.catch(err => console.error(`MongoDB connection error ${process.env.MONGO_URI}:`, err));
 var fs = require('fs');
 var product = require("./model/product.js");
 var user = require("./model/user.js");
@@ -79,6 +84,7 @@ app.post("/login", (req, res) => {
   try {
     if (req.body && req.body.username && req.body.password) {
       user.find({ username: req.body.username }, (err, data) => {
+        
         if (data.length > 0) {
 
           if (bcrypt.compareSync(data[0].password, req.body.password)) {
@@ -115,11 +121,12 @@ app.post("/login", (req, res) => {
 
 /* register api */
 app.post("/register", (req, res) => {
+  console.log(req.body)
   try {
     if (req.body && req.body.username && req.body.password) {
-
+      console.log(req.body && req.body.username && req.body.password)
       user.find({ username: req.body.username }, (err, data) => {
-
+        console.log(129,err)
         if (data.length == 0) {
 
           let User = new user({

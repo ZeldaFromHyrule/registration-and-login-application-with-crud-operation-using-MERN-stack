@@ -1,60 +1,104 @@
-# MERN Stack | Login, Registration and CRUD app - For Beginners
+# MERN App Deployment on Azure with Terraform, Docker, and GitHub Actions
 
-## 🔆 🍃 Nodejs(Express.js) + mongoDB + mongoose + JWT + react.js + material-ui + axios(API call)
+## Table of Contents
+- [Project Overview](#project-overview)
+- [Prerequisites](#prerequisites)
+- [Repository Structure](#repository-structure)
+- [Configuration](#configuration)
+- [Terraform Deployment](#terraform-deployment)
+- [Docker & Azure Container Registry (ACR)](#docker--azure-container-registry-acr)
+- [GitHub Actions Workflow](#github-actions-workflow)
+- [Environment Variables & Secrets](#environment-variables--secrets)
+- [Updating & Redeployment](#updating--redeployment)
+- [Cleaning Up](#cleaning-up)
 
-Simlple example of user registration, login and CRUD action with backend restAPI using mongoDB, Nodejs, Express.js, and mongoose, authentication using JWT token also pagination and frontend using react.js and material-ui api calling with axios.
+## Project Overview
+This repository demonstrates how to deploy a MERN (MongoDB, Express, React, Node.js) application to Azure using:
+1. **Terraform** for infrastructure as code (Resource Group, ACR, Web Apps).
+2. **Docker** to containerize frontend and backend services.
+3. **GitHub Actions** to automate building, pushing Docker images to ACR, and deploying updates to Azure Web Apps.
 
-This project is just to help MERN stack beginners learn the basics, intentionally made for our students at [Volunteer Tech®](https://volunteer-tech.com/) as a reference material. 
+## Prerequisites
+- An **Azure** subscription.
+- **Terraform** v1.** installed.
+- **Azure CLI**.
+- **Docker** installed and running.
+- A **GitHub** repository with this code.
+- GitHub **Secrets**:
+  - `AZURE_CREDENTIALS`
+  - `ACR_USERNAME`
+  - `ACR_PASSWORD`
+  - `MONGO_URI`
 
-[![flow](https://github.com/FSojitra/Registration-Login-and-CRUD-Action-using-MERN-stack/blob/development/MERN.gif)](https://github.com/FSojitra/Registration-Login-and-CRUD-Action-using-MERN-stack/blob/development/MERN.gif)
+## Repository Structure
+```
+├── backend/                 # Node.js/Express backend
+├── frontend/                # React frontend
+├── main.tf                  # Terraform configuration
+├── variables.tf             # Terraform variables definitions
+├── terraform.tfvars         # Terraform variable values
+└── .github/
+    └── workflows/
+        └── build-and-deploy.yml  # GitHub Actions workflow
+```
 
-### This Project is a Simple ReactJS Project which demonstrates the following
-##### Backend
-- API to register and login user.
-- API using which loged in user can add, edit and update it's product.
-- Pagination API to give list of perticular user's added product.
-- JWT token authentication.
+## Configuration
+1. **Terraform Variables**: Edit `variables.tf` and `terraform.tfvars` for:
+   - `resource_group_name`
+   - `location`
+   - `acr_name`
+   - `container_app_env_name`
 
-##### Frontend
-- Creating a Component in React and creat routing.
-- Using react and material UI created form to login user and can register new user.
-- Product add, edit, delete and pagination also you can search product by name.
-- Making HTTP calls using Axios.
-- Calling multipart api with image upload.
+2. **Terraform Backend** (optional): Configure remote state if needed.
 
-### Prerequisites
-Below noted things you need to install to run this project in your system
+## Terraform Deployment
+```bash
+# Initialize Terraform
+terraform init
 
-- Node.js
-- NPM
-- MongoDB
+# Review changes
+terraform plan
 
-### To Setup
-Clone or download this repository
+# Apply infrastructure
+terraform apply
+```
+This creates:
+- Resource Group
+- Azure Container Registry (ACR)
+- User-assigned Managed Identity
+- Role assignments for ACR push/pull
+- App Service Plan (Linux)
+- Two Linux Web Apps: backend and frontend with managed identity
 
-1. `cd registration-and-login-application-with-crud-operation-using-MERN-stack/backend`
-2. `npm install`
-3. `cd registration-and-login-application-with-crud-operation-using-MERN-stack/frontend`
-4. `npm install`
+## Docker & Azure Container Registry (ACR)
+- Backend and frontend Dockerfiles live in `backend/` and `frontend/`.
+- Images are tagged with a timestamp and pushed to ACR.
 
-### To Run
-To run node server
-1. `cd registration-and-login-application-with-crud-operation-using-MERN-stack/backend`
-2. `node server.js`
+## GitHub Actions Workflow
+Located at `.github/workflows/build-and-deploy.yml`, the workflow:
+1. Checks out code.
+2. Logs into Azure and ACR.
+3. Builds Docker images for backend and frontend.
+4. Pushes images to ACR.
+5. Updates Azure Web Apps to use new images and restarts them.
+6. Configures CORS and app settings.
 
-To run react frontend
-1. `cd registration-and-login-application-with-crud-operation-using-MERN-stack/frontend`
-2. `npm start`
+Trigger manually via "Run workflow" in GitHub.
 
-<!-- ### Login and Register screen
-[![login](https://github.com/FSojitra/Registration-Login-and-CRUD-Action-using-MERN-stack/blob/master/login.png)](https://github.com/FSojitra/Registration-Login-and-CRUD-Action-using-MERN-stack/blob/master/login.png)[![register](https://github.com/FSojitra/Registration-Login-and-CRUD-Action-using-MERN-stack/blob/master/register.png)](https://github.com/FSojitra/Registration-Login-and-CRUD-Action-using-MERN-stack/blob/master/register.png)
+## Environment Variables & Secrets
+- `AZURE_CREDENTIALS`: Azure service principal JSON.
+- `ACR_USERNAME` & `ACR_PASSWORD`: ACR admin credentials.
+- `MONGO_URI`: MongoDB connection string.
+- `TIMESTAMP`: Auto-generated build tag in workflow.
 
-### Product Add and Edit screen
-[![add](https://github.com/FSojitra/Registration-Login-and-CRUD-Action-using-MERN-stack/blob/master/add.png)](https://github.com/FSojitra/Registration-Login-and-CRUD-Action-using-MERN-stack/blob/master/add.png)  [![edit](https://github.com/FSojitra/Registration-Login-and-CRUD-Action-using-MERN-stack/blob/master/edit.png)](https://github.com/FSojitra/Registration-Login-and-CRUD-Action-using-MERN-stack/blob/master/edit.png)
+## Updating & Redeployment
+To apply code or container updates:
+1. Push commits to the repository.
+2. Manually trigger or configure workflow triggers (e.g., on `main` push).
+3. Workflow rebuilds images, pushes to ACR, and updates web apps.
 
-### Product Pagination screen
-[![dashboard](https://github.com/FSojitra/Registration-Login-and-CRUD-Action-using-MERN-stack/blob/master/dashboard.png)](https://github.com/FSojitra/Registration-Login-and-CRUD-Action-using-MERN-stack/blob/master/dashboard.png) -->
-
-## Contributing
-
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+## Cleaning Up
+To destroy all resources:
+```bash
+terraform destroy
+```
